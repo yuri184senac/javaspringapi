@@ -1,0 +1,46 @@
+CREATE DATABASE pagamento;
+USE pagamento;
+
+-- Tabela tipo_pagamento
+CREATE TABLE tipo_pagamento (
+  id_tipo_pagamento BIGINT NOT NULL,
+  metodo_pagamento VARCHAR(45) NOT NULL,
+  status INT NOT NULL,
+  PRIMARY KEY (id_tipo_pagamento),
+  UNIQUE INDEX idx_metodo_pagamento (metodo_pagamento)
+) ENGINE = InnoDB;
+
+-- Tabela usuario
+CREATE TABLE usuario (
+  id_usuario BIGINT NOT NULL AUTO_INCREMENT,
+  cpf CHAR(11) NOT NULL,
+  nome VARCHAR(45) NOT NULL,
+  email VARCHAR(45) NOT NULL,
+  status INT NOT NULL,
+  PRIMARY KEY (id_usuario),
+  UNIQUE INDEX idx_cpf (cpf),
+  UNIQUE INDEX idx_email (email)
+) ENGINE = InnoDB;
+
+-- Tabela nota_fiscal
+CREATE TABLE nota_fiscal (
+  id_nota_fiscal BIGINT NOT NULL AUTO_INCREMENT,
+  id_usuario BIGINT NOT NULL,
+  status INT NOT NULL,
+  valor_total DECIMAL UNSIGNED NOT NULL,
+  id_tipo_pagamento BIGINT NOT NULL,
+  id_produto BIGINT NOT NULL,
+  PRIMARY KEY (id_nota_fiscal),
+  INDEX idx_fk_nota_fiscal_usuario (id_usuario),
+  INDEX idx_fk_nota_fiscal_tipo_pagamento (id_tipo_pagamento),
+  CONSTRAINT fk_nota_fiscal_usuario
+    FOREIGN KEY (id_usuario)
+    REFERENCES usuario (id_usuario)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_nota_fiscal_tipo_pagamento
+    FOREIGN KEY (id_tipo_pagamento)
+    REFERENCES tipo_pagamento (id_tipo_pagamento)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+) ENGINE = InnoDB;
